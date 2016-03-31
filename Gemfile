@@ -5,6 +5,7 @@ gem 'jquery-ui-rails'
 
 gem 'pg'
 gem 'rails_12factor', group: :production
+gem 'puma'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
