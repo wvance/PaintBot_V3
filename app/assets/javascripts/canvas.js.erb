@@ -1,31 +1,31 @@
 window.onload = function() {
 
-  window.setInterval(function(){
-    // console.log("Success")
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        url: "/last",
-        success: function(data){
-          console.log(data.a1x);
-          A1.getBBox().x = data.a1x;
-          A1.getBBox().y = data.a1y;
+  // window.setInterval(function(){
+  //   // console.log("Success")
+  //   $.ajax({
+  //       type: "GET",
+  //       dataType: "json",
+  //       url: "/last",
+  //       success: function(data){
+  //         console.log(data.a1x);
+  //         A1.getBBox().x = data.a1x;
+  //         A1.getBBox().y = data.a1y;
 
-          A2.getBBox().x = data.a2x;
-          A2.getBBox().y = data.a2y;
+  //         A2.getBBox().x = data.a2x;
+  //         A2.getBBox().y = data.a2y;
 
-          A3.getBBox().x = data.a3x;
-          A3.getBBox().y = data.a3y;
+  //         A3.getBBox().x = data.a3x;
+  //         A3.getBBox().y = data.a3y;
 
-          A4.getBBox().x = data.a4x;
-          A4.getBBox().y = data.a4y;
+  //         A4.getBBox().x = data.a4x;
+  //         A4.getBBox().y = data.a4y;
 
-          brushPaint();
-          clearDraw();
-          drawArms();
-        }
-    });
-  }, 500);
+  //         brushPaint();
+  //         clearDraw();
+  //         drawArms();
+  //       }
+  //   });
+  // }, 500);
 
   // Creates canvas 320 × 200 at 10, 50
   var canvas = Raphael(200, 10, 1200, 400);
@@ -81,18 +81,18 @@ window.onload = function() {
 
   function initializePoints(){
 
-    $.ajax({
-      type: "GET",
-      dataType: "json",
-      url: "/last",
-      success: function(data){
-        console.log(data.a1x);
-        A1 = canvas.circle(data.a1x, data.a1y);
-        A2 = canvas.circle(data.a2x, data.a2y);
-        A3 = canvas.circle(data.a3x, data.a3y);
-        A4 = canvas.circle(data.a4x, data.a4y);
-      }
-    });
+    // $.ajax({
+    //   type: "GET",
+    //   dataType: "json",
+    //   url: "/last",
+    //   success: function(data){
+    //     console.log(data.a1x);
+    //     A1 = canvas.circle(data.a1x, data.a1y);
+    //     A2 = canvas.circle(data.a2x, data.a2y);
+    //     A3 = canvas.circle(data.a3x, data.a3y);
+    //     A4 = canvas.circle(data.a4x, data.a4y);
+    //   }
+    // });
 
     // FIRST POINT
     A1 = canvas.circle(canvas.width /2, canvas.height, 1);
@@ -144,7 +144,7 @@ window.onload = function() {
     A3.transform("...T-5,0");
     A4.transform("...T-5,0");
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
     brushPaint();
     clearDraw();
     drawArms();
@@ -155,43 +155,87 @@ window.onload = function() {
     A3.transform("...T5,0");
     A4.transform("...T5,0");
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
   function l2Counter(){
+    temp_angle = Raphael.angle(A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y);
+    console.log("Angle Between A2 and A3: " + String(temp_angle));
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    temp_angle2 = Raphael.angle(A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    console.log("Angle Between A3 and A4: " + String(temp_angle2));
+
+    temp_angle3 = Raphael.angle(A2.getBBox().x, A2.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    console.log("Angle Between A2 and A4: " + String(temp_angle3));
+
+    console.log("Difference Between A2 and A3: " + String(180 -(temp_angle - temp_angle2)));
+
+    var rotateA3 = "...R-5," + A2.getBBox().x + "," + A2.getBBox().y;
+    A3.transform(rotateA3);
+
+    // A3.rotate(-5,  A2.getBBox().x, A2.getBBox().y)
+
+    // var rotateA4 = "...R-5," + A3.getBBox().x + "," + A3.getBBox().y;
+    // A4.transform(rotateA4);
+
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
   function l2Clock(){
+    temp_angle = Raphael.angle(A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y);
+    console.log("Angle Between A2 and A3: " + String(temp_angle));
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // clearDraw();
-    // drawArms();
+    temp_angle2 = Raphael.angle(A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    console.log("Angle Between A3 and A4: " + String(temp_angle2));
+
+    temp_angle3 = Raphael.angle(A2.getBBox().x, A2.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    console.log("Angle Between A2 and A4: " + String(temp_angle3));
+
+    console.log("Difference Between A2 and A3: " + String(180 -(temp_angle - temp_angle2)));
+
+    var rotateA3 = "...R5," + A2.getBBox().x + "," + A2.getBBox().y;
+    A3.transform(rotateA3);
+
+
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    clearDraw();
+    drawArms();
   }
   function l3Counter(){
     // ... (Adds to) Rotation -5 degrees about, A3x and A3y
     var temp = "...R-5," + A3.getBBox().x + "," + A3.getBBox().y;
     A4.transform(temp);
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    temp_angle = Raphael.angle(A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    console.log("Angle Between A3 and A4: " + String(temp_angle));
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
   function l3Clock(){
     // ... (Adds to) Rotation 5 degrees about, A3x and A3y
     var temp = "...R5," + A3.getBBox().x + "," + A3.getBBox().y;
     A4.transform(temp);
 
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+
+    temp_angle = Raphael.angle(A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    console.log("Angle Between A3 and A4: " + String(temp_angle));
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
 
 
@@ -199,11 +243,11 @@ window.onload = function() {
     A4.transform("t0,-5...");
     var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
 
-    // DO NOT TOUCH
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
   function brushDown(){
     A4.transform("t0,5...");
@@ -215,10 +259,12 @@ window.onload = function() {
     // transformText = "...T" + String(tempx) + ","+ String(tempy);
     // A3.transform(transformText);
     // DO NOT TOUCH
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
 
   }
   function brushLeft(){
@@ -226,20 +272,22 @@ window.onload = function() {
     var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
 
     // DO NOT TOUCH
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
   function brushRight(){
     A4.transform("t5,0...");
     var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
 
     // DO NOT TOUCH
-    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
-    // brushPaint();
-    // clearDraw();
-    // drawArms();
+    // pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+
+    brushPaint();
+    clearDraw();
+    drawArms();
   }
 
   function brushPaint(){
