@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Robots</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>A1x</th>
+      <th>A1y</th>
+      <th>A2x</th>
+      <th>A2y</th>
+      <th>A3x</th>
+      <th>A3y</th>
+      <th>A4x</th>
+      <th>A4y</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @robots.each do |robot| %>
+      <tr>
+        <td><%= robot.a1x %></td>
+        <td><%= robot.a1y %></td>
+        <td><%= robot.a2x %></td>
+        <td><%= robot.a2y %></td>
+        <td><%= robot.a3x %></td>
+        <td><%= robot.a3y %></td>
+        <td><%= robot.a4x %></td>
+        <td><%= robot.a4y %></td>
+        <td><%= link_to 'Show', robot %></td>
+        <td><%= link_to 'Edit', edit_robot_path(robot) %></td>
+        <td><%= link_to 'Destroy', robot, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Robot', new_robot_path %>

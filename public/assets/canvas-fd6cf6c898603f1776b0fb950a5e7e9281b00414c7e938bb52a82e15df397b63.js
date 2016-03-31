@@ -1,0 +1,1 @@
+function onResize(){path.position=view.center}window.onload=function(){var e=document.getElementById("myCanvas");paper.setup(e);var n=new paper.Path;n.strokeColor="black";var o=new paper.Point(100,100);n.moveTo(o),n.lineTo(o.add([200,-50])),paper.view.draw()};

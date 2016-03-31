@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  a1x: 1
+  a1y: 1
+  a2x: 1
+  a2y: 1
+  a3x: 1
+  a3y: 1
+  a4x: 1
+  a4y: 1
+
+two:
+  a1x: 1
+  a1y: 1
+  a2x: 1
+  a2y: 1
+  a3x: 1
+  a3y: 1
+  a4x: 1
+  a4y: 1

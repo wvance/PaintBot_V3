@@ -1,0 +1,352 @@
+window.onload = function() {
+
+  window.setInterval(function(){
+    // console.log("Success")
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/last",
+        success: function(data){
+          console.log(data.a1x);
+          A1.getBBox().x = data.a1x;
+          A1.getBBox().y = data.a1y;
+
+          A2.getBBox().x = data.a2x;
+          A2.getBBox().y = data.a2y;
+
+          A3.getBBox().x = data.a3x;
+          A3.getBBox().y = data.a3y;
+
+          A4.getBBox().x = data.a4x;
+          A4.getBBox().y = data.a4y;
+
+          brushPaint();
+          clearDraw();
+          drawArms();
+        }
+    });
+  }, 500);
+
+  // Creates canvas 320 × 200 at 10, 50
+  var canvas = Raphael(200, 10, 1200, 400);
+  paint = false;
+  paintColor = "black";
+  initializePoints();
+  drawArms();
+
+  $(function() {
+    $("#slider").slider({
+      min: 1,
+      max: 10,
+      change: function( event, ui ) {
+        setBrushWidth();
+      }
+    });
+  });
+
+  setBrushWidth()
+
+  // Update coordinates to database :D
+  function pushToDatabase(a1x, a1y, a2x, a2y, a3x, a3y, a4x, a4y){
+    $.ajax({
+      data: {
+        robot: {
+          'a1x': a1x,
+          'a1y': a1y,
+          'a2x': a2x,
+          'a2y': a2y,
+          'a3x': a3x,
+          'a3y': a3y,
+          'a4x': a4x,
+          'a4y': a4y
+        }
+      },
+      type: 'POST',
+      url: '/robots',
+      success: function () {
+        console.log("Successful Push To Server");// it worked!
+      },
+      error: function (response) {
+        console.log("Failure to Push To Server"); // we had an error
+      }
+    });
+  }
+
+// ==================
+// === INITIALIZE ===
+// ==================
+  function setBrushWidth(){
+    brushSize = $("#slider").slider( "value" );
+  }
+
+  function initializePoints(){
+
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      url: "/last",
+      success: function(data){
+        console.log(data.a1x);
+        A1 = canvas.circle(data.a1x, data.a1y);
+        A2 = canvas.circle(data.a2x, data.a2y);
+        A3 = canvas.circle(data.a3x, data.a3y);
+        A4 = canvas.circle(data.a4x, data.a4y);
+      }
+    });
+
+    // FIRST POINT
+    A1 = canvas.circle(canvas.width /2, canvas.height, 1);
+    A1.attr("fill", "#f00");
+    A1.attr("stroke", "#fff");
+    // SECOND POINT
+    A2 = canvas.circle(A1.attrs.cx, A1.attrs.cy-150, 1);
+    A2.attr("fill", "#f00");
+    A2.attr("stroke", "#fff");
+    // THIRD POINT
+    A3 = canvas.circle(A2.attrs.cx, A2.attrs.cy-100, 1);
+    A3.attr("fill", "#f00");
+    A3.attr("stroke", "#fff");
+    // FOURTH POINT
+    A4 = canvas.circle(A3.attrs.cx, A3.attrs.cy-75, 1);
+    A4.attr("fill", "#111");
+    A4.attr("stroke", "#111");
+  }
+
+  function clearDraw(){
+    L1.remove();
+    L2.remove();
+    L3.remove();
+    // LOOP THROUGH DRAWN CIRLCES AND REMOVE
+  }
+
+  function drawArms(){
+    L1_Path = "M" + String(A1.getBBox().x + A1.getBBox().width/2) + " " + String(A1.getBBox().y + A1.getBBox().height/2) + "L" + String(A2.getBBox().x + A2.getBBox().width/2) + " " + String(A2.getBBox().y + A2.getBBox().height/2)
+    L1 = canvas.path(L1_Path)
+    L1.attr({"stroke":"red"});
+
+    // SECOND ARM
+    L2_Path = "M" + String(A2.getBBox().x + A2.getBBox().width/2) + " " + String(A2.getBBox().y + A2.getBBox().height/2) + "L" + String(A3.getBBox().x + A3.getBBox().width/2) + " " + String(A3.getBBox().y + A3.getBBox().height/2)
+    L2 = canvas.path(L2_Path)
+    L2.attr({"stroke":"green"});
+
+    // THIRD ARM
+    L3_Path = "M" + String(A3.getBBox().x + A3.getBBox().width/2) + " " + String(A3.getBBox().y + A3.getBBox().height/2) + "L" + String(A4.getBBox().x + A4.getBBox().width/2) + " " + String(A4.getBBox().y + A4.getBBox().height/2)
+    L3 = canvas.path(L3_Path)
+    L3.attr({"stroke":"blue"});
+  }
+
+// ==================
+// ====== CORE ======
+// ==================
+  function l1TransLeft (){
+    A1.transform("...T-5,0");
+    A2.transform("...T-5,0");
+    A3.transform("...T-5,0");
+    A4.transform("...T-5,0");
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    brushPaint();
+    clearDraw();
+    drawArms();
+  }
+  function l1TransRight(){
+    A1.transform("...T5,0");
+    A2.transform("...T5,0");
+    A3.transform("...T5,0");
+    A4.transform("...T5,0");
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+  function l2Counter(){
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+  function l2Clock(){
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // clearDraw();
+    // drawArms();
+  }
+  function l3Counter(){
+    // ... (Adds to) Rotation -5 degrees about, A3x and A3y
+    var temp = "...R-5," + A3.getBBox().x + "," + A3.getBBox().y;
+    A4.transform(temp);
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+  function l3Clock(){
+    // ... (Adds to) Rotation 5 degrees about, A3x and A3y
+    var temp = "...R5," + A3.getBBox().x + "," + A3.getBBox().y;
+    A4.transform(temp);
+
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+
+
+  function brushUp(){
+    A4.transform("t0,-5...");
+    var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
+
+    // DO NOT TOUCH
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+  function brushDown(){
+    A4.transform("t0,5...");
+    var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
+    // console.log(A3_Points);
+    // tempx = A3.getBBox().x - A3_Points[0];
+    // tempy = A3.getBBox().y - A3_Points[1];
+
+    // transformText = "...T" + String(tempx) + ","+ String(tempy);
+    // A3.transform(transformText);
+    // DO NOT TOUCH
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+
+  }
+  function brushLeft(){
+    A4.transform("t-5,0...");
+    var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
+
+    // DO NOT TOUCH
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+  function brushRight(){
+    A4.transform("t5,0...");
+    var A3_Points = inverseKin(A4.getBBox().x, A4.getBBox().y);
+
+    // DO NOT TOUCH
+    pushToDatabase(A1.getBBox().x, A1.getBBox().y, A2.getBBox().x, A2.getBBox().y, A3.getBBox().x, A3.getBBox().y, A4.getBBox().x, A4.getBBox().y);
+    // brushPaint();
+    // clearDraw();
+    // drawArms();
+  }
+
+  function brushPaint(){
+    if ( paint == true ){
+      dot = canvas.circle(A4.getBBox().x, A4.getBBox().y, brushSize);
+      dot.attr("fill",paintColor)
+      // TODO MAKE LINE BETWEEN EACH 'DOT'
+    }
+  }
+
+  function inverseKin(x0, y0){
+    x0 = x0 - canvas.width/2 + 1
+    x0 = Math.round(x0);
+
+    y0 = (canvas.height - y0 - L1.getBBox().height) - 1
+    y0 = Math.round(y0);
+
+    D = (Math.pow(L2.getBBox().height, 2) + Math.pow(L3.getBBox().height, 2) - Math.pow(x0,2) - Math.pow(y0,2));
+    D = D / (2 * (L2.getBBox().height) * (L3.getBBox().height))
+    console.log(D);
+
+    temp = Math.sqrt(1 - (Math.pow(D,2)));
+    // console.log(temp);
+    // if (temp >= 0){
+    //   phi = Math.atan2(temp, D) * (180/Math.PI);
+    //   theta2 = 180 - phi;
+
+    //   beta = Math.atan2(y0,x0) * (180/Math.PI);
+    //   alpha = (Math.atan2(L2.getBBox().height + L3.getBBox().height*Math.cos(theta2 * (Math.PI/180)), L3.getBBox().height*Math.sin(theta2 * (Math.PI/180)))* (180/Math.PI))
+    //   theta1 = beta - alpha;
+
+    //   var coordinates = [];
+    //   tempx = 2*Math.cos(theta1 * (Math.PI/180)) * (180/Math.PI);
+    //   tempy = 2*Math.sin(theta1 * (Math.PI/180)) * (180/Math.PI);
+
+    //   coordinates.push(tempx + canvas.width/2);
+    //   coordinates.push(tempy + y0 + L1.getBBox().height);
+    // }
+    clearDraw();
+    drawArms();
+    // return coordinates;
+  }
+
+
+// ==================
+// ==== BUTTONS =====
+// ==================
+  $('#moveL1Left').on('click', function(event) {
+    event.preventDefault();
+    l1TransLeft();
+  });
+  $('#moveL1Right').on('click', function(event) {
+    event.preventDefault();
+    l1TransRight();
+  });
+
+  $('#rotateL2Counter').on('click', function(event) {
+    event.preventDefault();
+    l2Counter();
+  });
+  $('#rotateL2Clockwise').on('click', function(event) {
+    event.preventDefault();
+    l2Clock();
+  });
+
+  $('#rotateL3Counter').on('click', function(event) {
+    event.preventDefault();
+    l3Counter();
+  });
+  $('#rotateL3Clockwise').on('click', function(event) {
+    event.preventDefault();
+    l3Clock();
+  });
+
+  $('#brushUpButton').on('click', function(event) {
+    event.preventDefault();
+    brushUp();
+  });
+  $('#brushDownButton').on('click', function(event) {
+    event.preventDefault();
+    brushDown();
+  });
+  $('#brushLeftButton').on('click', function(event) {
+    event.preventDefault();
+    brushLeft();
+  });
+  $('#brushRightButton').on('click', function(event) {
+    event.preventDefault();
+    brushRight();
+  });
+
+  $('#paintToggleButton').on('click', function(event) {
+    event.preventDefault();
+    if ( paint == false ){
+      $(this).find('i').toggleClass('fa-toggle-off fa-toggle-on');
+      paint = true;
+    } else{
+      $(this).find('i').toggleClass('fa-toggle-off fa-toggle-on');
+      paint = false;
+    }
+  });
+
+  $('#resetCanvasButton').on('click', function(event){
+    event.preventDefault();
+    initializePoints();
+    clearDraw();
+    drawArms();
+  });
+
+}
